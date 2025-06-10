@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { backendUrl } from "../App"; // ✅ Make sure this is defined and exported from App.jsx
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -9,7 +10,7 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/order/list", {
+      const res = await axios.get(`${backendUrl}/api/order/list`, {
         headers: { token },
       });
       if (res.data.success) {
@@ -28,7 +29,7 @@ const Orders = () => {
   const updateOrderStatus = async (orderId, status) => {
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/order/status",
+        `${backendUrl}/api/order/status`,
         { orderId, status },
         { headers: { token } }
       );
@@ -66,7 +67,7 @@ const Orders = () => {
               className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-xl transition duration-300"
             >
               <div className="flex flex-col md:flex-row md:justify-between gap-4">
-                {/* Left Column: Address and User */}
+                {/* Left Column */}
                 <div className="md:w-1/3">
                   <h3 className="text-lg font-semibold text-[#23066d] mb-2">👤 Customer</h3>
                   <p className="text-sm font-medium">
@@ -80,7 +81,7 @@ const Orders = () => {
                   <p className="text-sm text-gray-600">📞 {order.address.phone}</p>
                 </div>
 
-                {/* Middle Column: Items and Payment */}
+                {/* Middle Column */}
                 <div className="md:w-1/3">
                   <h3 className="text-lg font-semibold text-[#23066d] mb-2">🛒 Items</h3>
                   {order.items.map((item, index) => (
@@ -93,8 +94,7 @@ const Orders = () => {
                       💰 <span className="font-medium">Total:</span> ₹{order.amount}
                     </p>
                     <p>
-                      🧾 <span className="font-medium">Method:</span>{" "}
-                      {order.PaymentMethod}
+                      🧾 <span className="font-medium">Method:</span> {order.PaymentMethod}
                     </p>
                     <p>
                       💳 <span className="font-medium">Payment:</span>{" "}
@@ -103,8 +103,7 @@ const Orders = () => {
                       </span>
                     </p>
                     <p>
-                      📅{" "}
-                      {new Date(order.date).toLocaleDateString()}{" "}
+                      📅 {new Date(order.date).toLocaleDateString()}{" "}
                       <span className="text-xs text-gray-500">
                         ({new Date(order.date).toLocaleTimeString()})
                       </span>
@@ -112,9 +111,9 @@ const Orders = () => {
                   </div>
                 </div>
 
-                {/* Right Column: Status and Actions */}
+                {/* Right Column */}
                 <div className="md:w-1/3">
-                  <h3 className="text-lg font-semibold text-[#23066d] mb-2"> Status</h3>
+                  <h3 className="text-lg font-semibold text-[#23066d] mb-2">Status</h3>
                   <span
                     className={`inline-block px-3 py-1 mb-4 rounded-full text-sm font-medium ${
                       order.status === "Delivered"
