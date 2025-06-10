@@ -1,0 +1,99 @@
+/* Footer styling */
+.footer {
+    background-color: #23066d;
+    color: #ffffff;
+    padding: 40px 20px;
+  }
+  
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Left side: Address */
+  .footer-left {
+    width: 30%;
+  }
+  
+  .footer-left h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-left p {
+    font-size: 16px;
+    color: #dddddd;
+    line-height: 1.6;
+  }
+  
+  /* Middle section: Branches and Director Info */
+  .footer-middle {
+    width: 40%;
+    text-align: center;
+  }
+  
+  .footer-middle h4 {
+    font-size: 20px;
+    margin-bottom: 5px;
+    color: #ffffff;
+  }
+  
+  .footer-middle p {
+    font-size: 16px;
+    color: #dddddd;
+    margin: 0 0 20px 0;
+  }
+  
+  /* Right Side: Contact Details */
+  .footer-right {
+    width: 30%;
+  }
+  
+  .contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .footer-icon {
+    margin-right: 10px;
+    color: #ffffff;
+    font-size: 18px;
+  }
+  
+  .footer-right p {
+    margin: 0;
+    font-size: 16px;
+    color: #dddddd;
+  }
+  
+  /* Copyright Section */
+  .footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 20px;
+  }
+  
+  .footer-bottom p {
+    font-size: 14px;
+    color: #dddddd;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .footer-container {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  
+    .footer-left, .footer-middle, .footer-right {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  }
+  

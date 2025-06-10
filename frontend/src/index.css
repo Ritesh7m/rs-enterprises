@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a.active hr{
+    display: block;
+}
+
+*{
+    font-family:serif ;
+}
+
+.prata-regular{
+    font-family: "Prata",serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+::-webkit-scrollbar{
+    display: none;
+
+}
+
+@media (max-width:640px){
+    a.active{
+        background-color: rgb(11, 13, 91);
+        color: white;
+    }
+
+}
