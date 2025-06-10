@@ -86,7 +86,7 @@ const Navbar = () => {
             />
             {token && (
               <div className="absolute right-0 pt-4 hidden group-hover:block bg-[#23066d] text-white w-36 p-3 px-5 rounded-lg shadow-lg">
-                <p className="cursor-pointer hover:text-blue-400">My Profile</p>
+                
                 <p 
                   onClick={() => navigate('/orders')}
                   className="cursor-pointer hover:text-blue-400"
