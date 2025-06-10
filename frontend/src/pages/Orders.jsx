@@ -77,9 +77,10 @@ const Orders = () => {
                   <div className={`min-w-2 h-2 rounded ${item.status === 'Delivered' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
                   <p className="text-sm   md:text-base">{item.status}</p>
                 </div>
-                <button onClick={loadOrderData} className="border w-28 h-10 px-4 py-2 text-sm font-medium rounded-sm hover:shadow-md transition">
+                <button onClick={loadOrderData} className="border w-full sm:w-28 h-10 px-4 py-2 text-sm font-medium rounded-sm hover:shadow-md transition">
                   Track order
                 </button>
+
               </div>
             </div>
           ))
