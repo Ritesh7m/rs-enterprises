@@ -39,7 +39,7 @@ const App = () => {
       <Footer />
 
       
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="bootom-right" autoClose={3000} />
     </div>
   );
 };
