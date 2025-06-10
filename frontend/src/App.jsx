@@ -39,7 +39,12 @@ const App = () => {
       <Footer />
 
       
-      <ToastContainer position="bootom-right" autoClose={3000} />
+      <ToastContainer
+  position="top-center"
+  autoClose={3000}
+  toastStyle={{ marginTop: '60px' }} // Add top margin
+/>
+
     </div>
   );
 };
