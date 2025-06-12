@@ -40,13 +40,7 @@ const Hero = () => {
         </div>
 
         {/* Right Section */}
-        <div className="w-full sm:w-1/2 flex items-center justify-center">
-          <img
-            className="w-full sm:w-auto sm:max-w-full max-h-[500px] object-contain mx-4 mb-6 sm:mb-10 mt-6 sm:mt-10 rounded-[40px] transition-transform transform hover:scale-105 hover:brightness-110"
-            src={assets.hero_img}
-            alt="Hero"
-          />
-        </div>
+        
       </div>
     </div>
   );
