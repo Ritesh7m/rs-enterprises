@@ -2,14 +2,18 @@ import React, { useContext, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [authMode, setAuthMode] = useState('signup');
-  const { setToken, navigate, backendUrl } = useContext(ShopContext);
+  const { setToken, backendUrl } = useContext(ShopContext);
+  const navigate = useNavigate();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const resetForm = () => {
     setName('');
@@ -62,7 +66,7 @@ const Login = () => {
 
         if (res.data.success) {
           toast.success(res.data.message || 'Login successful');
-          localStorage.setItem("userId", res.data.Id);
+          localStorage.setItem("userId", res.data.id);
           setToken(res.data.token);
           localStorage.setItem('token', res.data.token);
           resetForm();
@@ -110,14 +114,22 @@ const Login = () => {
           required
         />
 
-        <input
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          type="password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#23066d]"
-          placeholder="Password"
-          required
-        />
+        <div className="w-full relative">
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            type={showPassword ? 'text' : 'password'}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#23066d]"
+            placeholder="Password"
+            required
+          />
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-[#23066d]" 
+          >
+            {showPassword ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
+          </span>
+        </div>
 
         <div className="w-full flex justify-between text-sm mt-[-8px] text-gray-600">
           <p className="cursor-pointer hover:text-[#23066d]">Forgot Password?</p>
