@@ -1,14 +1,20 @@
+// ============================================
+// FILE: LatestCollection.jsx (UPDATED)
+// ============================================
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "./Title";
 import Productitem from "./Productitem";
+import { mockProducts } from "../mocks/mockProducts";
 
-const LatestColletion = () => {
+const LatestCollection = () => {
   const { products } = useContext(ShopContext);
   const [latestProducts, setLatestProducts] = useState([]);
 
   useEffect(() => {
-    setLatestProducts(products.slice(0, 10));
+    // Use mock products in development, real products in production
+    const productsToUse = process.env.NODE_ENV === "development" ? mockProducts : products;
+    setLatestProducts(productsToUse.slice(0, 10));
   }, [products]);
 
   return (
@@ -39,4 +45,4 @@ const LatestColletion = () => {
   );
 };
 
-export default LatestColletion;
+export default LatestCollection;

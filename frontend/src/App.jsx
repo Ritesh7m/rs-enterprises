@@ -40,10 +40,10 @@ const App = () => {
 
       
       <ToastContainer
-  position="top-center"
-  autoClose={3000}
-  toastStyle={{ marginTop: '60px' }} // Add top margin
-/>
+        position="top-center"
+        autoClose={3000}
+        toastStyle={{ marginTop: '60px' }} // Add top margin
+      />
 
     </div>
   );

@@ -1,9 +1,13 @@
+// ============================================
+// FILE: Product.jsx (UPDATED)
+// ============================================
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProduct from "../component/RelatedProduct";
 import { toast } from "react-toastify";
+import { mockProducts } from "../mocks/mockProducts";
 
 const Product = () => {
   const { productId } = useParams();
@@ -12,13 +16,15 @@ const Product = () => {
   const [images, setImages] = useState("");
 
   const fetchProductData = async () => {
-    products.map((item) => {
-      if (item._id === productId) {
-        setProductData(item);
-        setImages(item.images[0]);
-        return null;
-      }
-    });
+    // Use mock products in development, real products in production
+    const productsToUse = process.env.NODE_ENV === "development" ? mockProducts : products;
+    
+    const foundProduct = productsToUse.find((item) => item._id === productId);
+    
+    if (foundProduct) {
+      setProductData(foundProduct);
+      setImages(foundProduct.images[0]);
+    }
   };
 
   useEffect(() => {
@@ -114,7 +120,7 @@ const Product = () => {
                 purification process is top-notch."
               </li>
               <li>
-                "Sleek design and advanced features—perfect for my family’s
+                "Sleek design and advanced features—perfect for my family's
                 needs."
               </li>
               <li>
