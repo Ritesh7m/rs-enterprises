@@ -60,6 +60,8 @@ import service_img4 from "./service_img4.png";
 import service_img5 from "./service_img5.png";
 import service_img6 from "./service_img6.png";
 
+import heroImage from "./images/Hero.png"
+
 export const assets = {
   logo,
   hero_img,
@@ -85,6 +87,7 @@ export const assets = {
   service_img4,
   service_img5,
   service_img6,
+  heroImage
 };
 
 export const products = [

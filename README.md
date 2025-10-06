@@ -41,5 +41,14 @@ Welcome to **RS Enterprises**, a modern full-featured **e-commerce website** bui
 
 ---
 
+## Color Theme
+| Element                   | Color     | Purpose                               |
+| ------------------------- | --------- | ------------------------------------- |
+| **Background**            | `#FFFEFD` | Cream (same as your base)             |
+| **Primary Text / Logo**   | `#190053` | Deep indigo (brand color)             |
+| **Accent Hover / Active** | `#5C3AFF` | Softer purple accent for hover states |
+| **Sidebar Background**    | `#190053` | Solid brand color for contrast        |
+| **Sidebar Hover**         | `#32226B` | Slightly lighter shade for feedback   |
+| **Icons / Text**          | `#190053` | Unified brand tone                    |
 
 
