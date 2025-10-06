@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
+import EyeOpen from '../assets/eye-open.png'
+import EyeClose from '../assets/eye-close.jpg'
 const Login = () => {
   const [authMode, setAuthMode] = useState('signup');
   const { setToken, navigate, backendUrl } = useContext(ShopContext);
@@ -10,6 +11,7 @@ const Login = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // 👁️ toggle state
 
   const resetForm = () => {
     setName('');
@@ -35,7 +37,6 @@ const Login = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-
     if (!validateForm()) return;
 
     try {
@@ -45,31 +46,24 @@ const Login = () => {
           email,
           password,
         });
-
         if (res.data.success) {
           toast.success(res.data.message || 'User registered successfully');
           resetForm();
-          setAuthMode('login'); 
-        } else {
-          toast.error(res.data.message || 'Registration failed');
-        }
-
+          setAuthMode('login');
+        } else toast.error(res.data.message || 'Registration failed');
       } else {
         const res = await axios.post(`${backendUrl}/api/user/login`, {
           email,
           password,
         });
-
         if (res.data.success) {
           toast.success(res.data.message || 'Login successful');
-          localStorage.setItem("userId", res.data.Id);
+          localStorage.setItem('userId', res.data.Id);
           setToken(res.data.token);
           localStorage.setItem('token', res.data.token);
           resetForm();
           navigate('/');
-        } else {
-          toast.error(res.data.message || 'Login failed');
-        }
+        } else toast.error(res.data.message || 'Login failed');
       }
     } catch (error) {
       console.error(error);
@@ -110,14 +104,26 @@ const Login = () => {
           required
         />
 
-        <input
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          type="password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#23066d]"
-          placeholder="Password"
-          required
-        />
+        {/* ✅ Password Field with Eye Toggle */}
+        <div className="relative w-full">
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            type={showPassword ? 'text' : 'password'}
+            className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#23066d]"
+            placeholder="Password"
+            required
+          />
+
+          {/* 👁️ Toggle button (eye images here) */}
+          <img
+  src={showPassword ? EyeClose : EyeOpen}
+  alt={showPassword ? 'Hide password' : 'Show password'}
+  className="absolute right-3 top-2.5 w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+  onClick={() => setShowPassword(prev => !prev)}
+/>
+
+        </div>
 
         <div className="w-full flex justify-between text-sm mt-[-8px] text-gray-600">
           <p className="cursor-pointer hover:text-[#23066d]">Forgot Password?</p>
