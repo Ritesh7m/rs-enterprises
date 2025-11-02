@@ -1,129 +1,185 @@
-import validator from "validator";
-import bcrypt from "bcryptjs";
-import userModel from "../models/userModel.js";
-import jwt from "jsonwebtoken";
+import userModel from "../models/userModel.js"
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
+import { sendOTPEmail } from "../config/nodemailer.js"
 
-const JWT_SECRET = process.env.JWT_SECRET || "default_secret_key";
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString()
+}
 
-const createToken = (id) => {
-  return jwt.sign({ id }, JWT_SECRET, {
-    expiresIn: "30d",
-  });
-};
-
-const loginUser = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
+    const { email } = req.body
+
+    if (!email) {
+      return res.json({ success: false, message: "Email is required" })
     }
 
-    const user = await userModel.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid credentials",
-      });
+    const user = await userModel.findOne({ email })
+    if (!user) {
+      return res.json({ success: false, message: "User not found" })
     }
 
-    const token = createToken(user._id);
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      token,
-      Id:user._id
-    });
+    // Generate OTP and set expiry (10 minutes)
+    const otp = generateOTP()
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes from now
+
+    // Save OTP to database
+    user.otp = otp
+    user.otpExpiry = otpExpiry
+    await user.save()
+
+    // Send OTP via email
+    const emailResult = await sendOTPEmail(email, otp)
+
+    if (emailResult.success) {
+      return res.json({ success: true, message: "OTP sent to your email" })
+    } else {
+      return res.json({ success: false, message: "Failed to send OTP" })
+    }
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+    console.error("Error in forgotPassword:", error)
+    res.json({ success: false, message: error.message })
   }
-};
+}
 
-const registrUser = async (req, res) => {
+export const verifyOTP = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { email, otp } = req.body
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
+    if (!email || !otp) {
+      return res.json({ success: false, message: "Email and OTP are required" })
     }
 
-    if (!validator.isEmail(email)) {
-      return res.status(400).json({ success: false, message: "Invalid email format" });
+    const user = await userModel.findOne({ email })
+    if (!user) {
+      return res.json({ success: false, message: "User not found" })
+    }
+
+    // Check if OTP exists and is not expired
+    if (!user.otp || user.otp !== otp) {
+      return res.json({ success: false, message: "Invalid OTP" })
+    }
+
+    if (new Date() > user.otpExpiry) {
+      return res.json({ success: false, message: "OTP has expired" })
+    }
+
+    // OTP verified successfully
+    return res.json({ success: true, message: "OTP verified successfully" })
+  } catch (error) {
+    console.error("Error in verifyOTP:", error)
+    res.json({ success: false, message: error.message })
+  }
+}
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body
+
+    if (!email || !otp || !newPassword) {
+      return res.json({ success: false, message: "All fields are required" })
+    }
+
+    if (newPassword.length < 8) {
+      return res.json({ success: false, message: "Password must be at least 8 characters" })
+    }
+
+    const user = await userModel.findOne({ email })
+    if (!user) {
+      return res.json({ success: false, message: "User not found" })
+    }
+
+    // Verify OTP one more time
+    if (!user.otp || user.otp !== otp || new Date() > user.otpExpiry) {
+      return res.json({ success: false, message: "Invalid or expired OTP" })
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(newPassword, salt)
+
+    // Update password and clear OTP
+    user.password = hashedPassword
+    user.otp = null
+    user.otpExpiry = null
+    await user.save()
+
+    return res.json({ success: true, message: "Password reset successfully" })
+  } catch (error) {
+    console.error("Error in resetPassword:", error)
+    res.json({ success: false, message: error.message })
+  }
+}
+
+export const register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body
+
+    if (!email.includes("@")) {
+      return res.json({ success: false, message: "Invalid email format" })
+    }
+
+    const exists = await userModel.findOne({ email })
+    if (exists) {
+      return res.json({ success: false, message: "User already exists" })
     }
 
     if (password.length < 8) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 8 characters",
-      });
+      return res.json({ success: false, message: "Password must be at least 8 characters" })
     }
 
-    const exists = await userModel.findOne({ email });
-    if (exists) {
-      return res.status(409).json({
-        success: false,
-        message: "User already exists",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
 
     const newUser = new userModel({
       name,
       email,
       password: hashedPassword,
-    });
+    })
 
-    const user = await newUser.save();
-    const token = createToken(user._id);
+    await newUser.save()
 
-    res.status(200).json({
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET)
+
+    res.json({
       success: true,
       message: "User registered successfully",
       token,
-    });
+      Id: newUser._id,
+    })
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
+    console.error("Error in register:", error)
+    res.json({ success: false, message: error.message })
   }
-};
+}
 
-const adminLogin = async (req, res) => {
+export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = jwt.sign({ role: "admin", email }, JWT_SECRET, {
-        expiresIn: "30d",
-      });
-      res.json({
-        success: true,
-        token,
-      });
-    } else {
-      res.status(401).json({
-        success: false,
-        message: "Invalid credentials",
-      });
-    }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
-  }
-};
+    const { email, password } = req.body
 
-export { loginUser, registrUser, adminLogin };
+    const user = await userModel.findOne({ email })
+
+    if (!user) {
+      return res.json({ success: false, message: "User does not exist" })
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password)
+
+    if (!isMatch) {
+      return res.json({ success: false, message: "Invalid credentials" })
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
+
+    res.json({
+      success: true,
+      message: "Login successful",
+      token,
+      Id: user._id,
+    })
+  } catch (error) {
+    console.error("Error in login:", error)
+    res.json({ success: false, message: error.message })
+  }
+}
