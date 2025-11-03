@@ -16,6 +16,9 @@ import Verifiy from "./pages/Verifiy";
 
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import ForgotPassword from "./component/ForgotPassword";
+import VerifyOTP from "./component/VerifyOTP";
+import ResetPassword from "./component/ResetPassword";
 
 const App = () => {
   return (
@@ -34,6 +37,12 @@ const App = () => {
         <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/verify" element={<Verifiy />} />
+
+        {/* // Inside your Routes component, add: */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
       </Routes>
 
       <Footer />

@@ -1,10 +1,14 @@
-import express from 'express';
-import { loginUser, registrUser, adminLogin } from '../controllers/userController.js';
+import express from "express"
+import { register, login, forgotPassword, verifyOTP, resetPassword } from "../controllers/userController.js"
 
-const router = express.Router();
+const userRouter = express.Router()
 
-router.post('/register', registrUser);
-router.post('/login', loginUser);
-router.post('/admin/login', adminLogin);
+// Existing routes
+userRouter.post("/register", register)
+userRouter.post("/login", login)
 
-export default router;
+userRouter.post("/forgot-password", forgotPassword)
+userRouter.post("/verify-otp", verifyOTP)
+userRouter.post("/reset-password", resetPassword)
+
+export default userRouter
