@@ -2,7 +2,6 @@
 
 Welcome to **RS Enterprises**, a modern full-featured **e-commerce website** built using the **MERN stack** (MongoDB, Express, React, Node.js). This project features a customer storefront, a powerful admin dashboard, secure authentication, and integrated payments using **Stripe**.
 
-> 🔗 **Live Website**: [https://rs-enterprises-frontend.vercel.app/](/)
 
 ---
 
